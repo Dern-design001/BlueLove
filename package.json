@@ -1,0 +1,13 @@
+{
+  "name": "bluelove-bracelets",
+  "version": "1.0.0",
+  "description": "Handcrafted Jewelry Web App",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx -y http-server .",
+    "dev": "npx -y http-server ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
