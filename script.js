@@ -16,23 +16,59 @@ let isAdmin = localStorage.getItem('bluelove_admin') === 'true';
 const ADMIN_EMAIL = 'bluelove.bracelets.96@gmail.com';
 const ADMIN_PASS = 'admin96'; // Set a default password
 
-// Falling Hearts logic
-function createHeart() {
+// EMAILJS CONFIGURATION (Replace with your actual keys)
+const EMAILJS_PUBLIC_KEY = '1o5zbJRcCwMSOTviS'; 
+const EMAILJS_SERVICE_ID = 'service_fzox0mb';
+const EMAILJS_ORDER_TEMPLATE_ID = 'template_sqimhep';
+const EMAILJS_CUSTOM_TEMPLATE_ID = 'template_sqimhep';
+
+(function() {
+    if (EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+    }
+})();
+
+// Falling Background Logic
+function createDecoration() {
     const container = document.getElementById('hearts-bg');
     if (!container) return;
-    const heart = document.createElement('div');
-    heart.className = 'heart';
-    const size = Math.random() * 20 + 10;
-    heart.style.width = size + 'px';
-    heart.style.height = size + 'px';
-    heart.style.left = Math.random() * 100 + 'vw';
-    heart.style.animationDuration = Math.random() * 8 + 5 + 's';
-    heart.style.opacity = Math.random() * 0.4 + 0.1;
-    heart.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
-    container.appendChild(heart);
-    setTimeout(() => heart.remove(), 13000);
+    
+    // Randomly choose between heart and sparkle
+    const isHeart = Math.random() > 0.4; 
+    const element = document.createElement('div');
+    element.className = isHeart ? 'heart' : 'sparkle';
+    
+    const size = isHeart ? Math.random() * 20 + 10 : Math.random() * 12 + 6;
+    element.style.width = size + 'px';
+    element.style.height = size + 'px';
+    element.style.left = Math.random() * 100 + 'vw';
+    element.style.animationDuration = Math.random() * 8 + 5 + 's';
+    element.style.opacity = Math.random() * 0.4 + 0.1;
+    
+    if (isHeart) {
+        element.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+    } else {
+        element.innerHTML = `<svg viewBox="0 0 24 24" fill="#3b82f6"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+    }
+    
+    container.appendChild(element);
+    setTimeout(() => element.remove(), 13000);
 }
-setInterval(createHeart, 800);
+setInterval(createDecoration, 700);
+
+// Scroll effects
+window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    if (window.scrollY > 50) {
+        nav?.classList.add('nav-scrolled');
+        nav?.classList.remove('py-4');
+        nav?.classList.add('py-2');
+    } else {
+        nav?.classList.remove('nav-scrolled');
+        nav?.classList.add('py-4');
+        nav?.classList.remove('py-2');
+    }
+});
 
 function navigateTo(pageId) {
     document.querySelectorAll('.page-view').forEach(view => view.classList.remove('active'));
@@ -191,29 +227,86 @@ document.getElementById('order-form').onsubmit = (e) => {
     const btn = e.target.querySelector('button');
     btn.innerText = "Confirming Order...";
     btn.disabled = true;
-    setTimeout(() => {
-        alert("✨ Order Confirmed! We'll reach out to your email shortly.");
-        cart = []; updateCartUI(); hideCheckout(); toggleCart();
-        btn.innerText = "Confirm Order"; btn.disabled = false;
-        navigateTo('home');
-    }, 2000);
+
+    const cartSummary = cart.map(item => `${item.name} (${item.quantity}) - ₹${item.price * item.quantity}`).join('\n');
+    const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+    const templateParams = {
+        customer_name: document.getElementById('cust-name').value,
+        customer_email: document.getElementById('cust-email').value,
+        customer_address: document.getElementById('cust-addr').value,
+        customer_city: document.getElementById('cust-city').value,
+        customer_phone: document.getElementById('cust-phone').value,
+        order_items: cartSummary,
+        total_amount: `₹${totalAmount.toLocaleString()}`
+    };
+
+    if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID') {
+        // Fallback for placeholder
+        setTimeout(() => {
+            alert("✨ (Demo Mode) Order Confirmed! We'll reach out shortly.");
+            cart = []; updateCartUI(); hideCheckout(); toggleCart();
+            btn.innerText = "Confirm Order"; btn.disabled = false;
+            navigateTo('home');
+        }, 2000);
+        return;
+    }
+
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_ORDER_TEMPLATE_ID, templateParams)
+        .then(() => {
+            alert("✨ Order Received! We'll contact you soon for confirmation.");
+            cart = []; updateCartUI(); hideCheckout(); toggleCart();
+            navigateTo('home');
+        })
+        .catch((error) => {
+            console.error('EmailJS Error:', error);
+            alert("Oops! Something went wrong with the order form. Please try again.");
+        })
+        .finally(() => {
+            btn.innerText = "Confirm Order";
+            btn.disabled = false;
+        });
 };
 
 // Customization Form Submission
 document.getElementById('custom-form').onsubmit = (e) => {
     e.preventDefault();
     const btn = e.target.querySelector('button');
-    const originalText = btn.innerHTML;
+    const originalText = btn.innerText;
     btn.innerText = "Sending Vision...";
     btn.disabled = true;
 
-    setTimeout(() => {
-        alert("✨ Your custom request has been sent! We'll contact you to discuss details and comfort options.");
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-        e.target.reset();
-        filterShop('all'); // Go back to all products
-    }, 2500);
+    const templateParams = {
+        custom_type: e.target.querySelector('input[name="custom-type"]:checked').value,
+        custom_description: document.getElementById('custom-desc').value,
+        customer_name: document.getElementById('custom-name').value,
+        customer_contact: document.getElementById('custom-contact').value
+    };
+
+    if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID') {
+        // Fallback for placeholder
+        setTimeout(() => {
+            alert("✨ (Demo Mode) Your custom request has been sent! We'll contact you shortly.");
+            btn.innerText = originalText;
+            btn.disabled = false; e.target.reset(); filterShop('all');
+        }, 2000);
+        return;
+    }
+
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_CUSTOM_TEMPLATE_ID, templateParams)
+        .then(() => {
+            alert("✨ Your custom request has been sent! Check your email/phone soon.");
+            e.target.reset();
+            filterShop('all');
+        })
+        .catch((error) => {
+            console.error('EmailJS Error:', error);
+            alert("Oops! Something went wrong. Please try again or WhatsApp us directly.");
+        })
+        .finally(() => {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        });
 };
 
 // ADMIN LOGIN LOGIC
