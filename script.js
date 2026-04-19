@@ -14,13 +14,16 @@ let cart = [];
 let currentFilter = 'all';
 let searchQuery = '';
 let isAdmin = localStorage.getItem('bluelove_admin') === 'true';
-let pendingAction = null; // stores action to run after guest login
+let pendingAction = null;
 // Admin credentials managed by Firebase Auth
-// EMAILJS CONFIGURATION (Replace with your actual keys)
+// EMAILJS CONFIGURATION
 const EMAILJS_PUBLIC_KEY = '1o5zbJRcCwMSOTviS'; 
 const EMAILJS_SERVICE_ID = 'service_fzox0mb';
 const EMAILJS_ORDER_TEMPLATE_ID = 'template_sqimhep';
 const EMAILJS_CUSTOM_TEMPLATE_ID = 'template_sqimhep';
+
+// Google Sheets webhook
+const SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbw2T5uFZ7xfeHWgUX4GwSQHYRDOZgJTRw5RCMtO4RH46Fh76-EHaAm2rYbakOPsKlTA/exec';
 
 (function() {
     if (EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
@@ -234,6 +237,28 @@ function removeFromCart(id) {
     updateCartUI();
 }
 
+function showQRModal(total, orderData) {
+    document.getElementById('qr-total').innerText = total;
+    document.getElementById('qr-modal').classList.remove('hidden');
+    document.getElementById('qr-modal').classList.add('flex');
+    // Store order data for confirmation
+    window._pendingOrder = orderData;
+}
+
+function hideQRModal() {
+    document.getElementById('qr-modal').classList.add('hidden');
+    document.getElementById('qr-modal').classList.remove('flex');
+}
+
+function confirmPaymentDone() {
+    hideQRModal();
+    cart = [];
+    updateCartUI();
+    toggleCart();
+    alert("✨ Order placed! We'll confirm once payment is verified.");
+    navigateTo('home');
+}
+
 function showCheckout() {
     requireLogin(() => {
         document.getElementById('checkout-modal').classList.remove('hidden');
@@ -247,50 +272,55 @@ function hideCheckout() {
     document.getElementById('checkout-modal').classList.remove('flex');
 }
 
+function logOrderToSheets(data) {
+    fetch(SHEETS_WEBHOOK, {
+        method: 'POST',
+        body: JSON.stringify(data)
+    }).catch(err => console.error('Sheets log failed:', err));
+}
+
 document.getElementById('order-form').onsubmit = (e) => {
     e.preventDefault();
     const btn = e.target.querySelector('button');
-    btn.innerText = "Confirming Order...";
+    btn.innerText = "Processing...";
     btn.disabled = true;
 
-    const cartSummary = cart.map(item => `${item.name} (${item.quantity}) - ₹${item.price * item.quantity}`).join('\n');
+    const cartSummary = cart.map(item => `${item.name} x${item.quantity} = ₹${item.price * item.quantity}`).join(' | ');
     const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    const templateParams = {
-        customer_name: document.getElementById('cust-name').value,
-        customer_email: document.getElementById('cust-email').value,
-        customer_address: document.getElementById('cust-addr').value,
-        customer_city: document.getElementById('cust-city').value,
-        customer_phone: document.getElementById('cust-phone').value,
-        order_items: cartSummary,
-        total_amount: `₹${totalAmount.toLocaleString()}`
+    const orderData = {
+        name: document.getElementById('cust-name').value,
+        email: document.getElementById('cust-email').value,
+        address: document.getElementById('cust-addr').value,
+        city: document.getElementById('cust-city').value,
+        phone: document.getElementById('cust-phone').value,
+        items: cartSummary,
+        total: `₹${totalAmount.toLocaleString()}`
     };
 
-    if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID') {
-        // Fallback for placeholder
-        setTimeout(() => {
-            alert("✨ (Demo Mode) Order Confirmed! We'll reach out shortly.");
-            cart = []; updateCartUI(); hideCheckout(); toggleCart();
-            btn.innerText = "Confirm Order"; btn.disabled = false;
-            navigateTo('home');
-        }, 2000);
-        return;
-    }
+    // Log to Google Sheets
+    logOrderToSheets(orderData);
+
+    // Send email notification via EmailJS
+    const templateParams = {
+        customer_name: orderData.name,
+        customer_email: orderData.email,
+        customer_address: orderData.address,
+        customer_city: orderData.city,
+        customer_phone: orderData.phone,
+        order_items: cartSummary,
+        total_amount: orderData.total
+    };
 
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_ORDER_TEMPLATE_ID, templateParams)
-        .then(() => {
-            alert("✨ Order Received! We'll contact you soon for confirmation.");
-            cart = []; updateCartUI(); hideCheckout(); toggleCart();
-            navigateTo('home');
-        })
-        .catch((error) => {
-            console.error('EmailJS Error:', error);
-            alert("Oops! Something went wrong with the order form. Please try again.");
-        })
-        .finally(() => {
-            btn.innerText = "Confirm Order";
-            btn.disabled = false;
-        });
+        .catch(err => console.error('Email failed:', err));
+
+    // Show QR payment modal
+    hideCheckout();
+    showQRModal(orderData.total, orderData);
+
+    btn.innerText = "Confirm Order";
+    btn.disabled = false;
 };
 
 // Customization Form Submission
@@ -401,7 +431,14 @@ async function handleGoogleLogin() {
         hideGuestLoginModal();
         if (pendingAction) { pendingAction(); pendingAction = null; }
     } catch (e) {
-        alert('Google sign-in failed. Please try again.');
+        console.error('Google sign-in error:', e);
+        if (e.code === 'auth/popup-blocked') {
+            alert('Popup was blocked. Please allow popups for this site and try again.');
+        } else if (e.code === 'auth/cancelled-popup-request' || e.code === 'auth/popup-closed-by-user') {
+            // user closed popup, do nothing
+        } else {
+            alert('Google sign-in failed: ' + (e.message || 'Please try again.'));
+        }
     }
 }
 document.addEventListener('DOMContentLoaded', () => {
