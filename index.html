@@ -29,6 +29,7 @@
             <button onclick="navigateTo('home')" class="nav-btn hover:text-blue-600 transition-colors text-blue-600" data-page="home">Home</button>
             <button onclick="navigateTo('shop')" class="nav-btn hover:text-blue-600 transition-colors" data-page="shop">Shop</button>
             <button onclick="navigateTo('about')" class="nav-btn hover:text-blue-600 transition-colors" data-page="about">About</button>
+            <button onclick="navigateTo('reviews')" class="nav-btn hover:text-blue-600 transition-colors" data-page="reviews">Reviews</button>
         </div>
 
         <div class="flex items-center gap-2">
@@ -216,6 +217,38 @@
                     <button id="newsletter-btn" onclick="subscribeNewsletter()" class="bg-white text-blue-700 px-10 py-4 rounded-2xl font-bold shadow-lg hover:bg-blue-50 transition-all text-lg">Subscribe to Newsletter</button>
                     <p id="newsletter-msg" class="text-blue-200 text-sm mt-4 hidden"></p>
                 </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- REVIEWS PAGE -->
+    <main id="page-reviews" class="page-view pt-32 pb-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12 animate-up">
+                <h2 class="text-4xl font-extrabold text-blue-900 mb-4">Customer Reviews</h2>
+                <p class="text-gray-500">What our Bluelove family is saying</p>
+            </div>
+
+            <!-- Submit Review -->
+            <div class="glass rounded-[3rem] p-10 mb-12 animate-up">
+                <h3 class="text-xl font-extrabold text-blue-900 mb-6">Share Your Experience</h3>
+                <form id="review-form" class="space-y-4">
+                    <div class="flex gap-2 mb-2" id="star-rating">
+                        <span class="text-xs font-bold text-gray-400 uppercase mr-2 self-center">Rating</span>
+                        <button type="button" onclick="setRating(1)" class="star-btn text-3xl text-gray-300 hover:text-yellow-400 transition-colors">★</button>
+                        <button type="button" onclick="setRating(2)" class="star-btn text-3xl text-gray-300 hover:text-yellow-400 transition-colors">★</button>
+                        <button type="button" onclick="setRating(3)" class="star-btn text-3xl text-gray-300 hover:text-yellow-400 transition-colors">★</button>
+                        <button type="button" onclick="setRating(4)" class="star-btn text-3xl text-gray-300 hover:text-yellow-400 transition-colors">★</button>
+                        <button type="button" onclick="setRating(5)" class="star-btn text-3xl text-gray-300 hover:text-yellow-400 transition-colors">★</button>
+                    </div>
+                    <textarea id="review-text" required placeholder="Tell us about your experience with Bluelove..." class="w-full h-32 bg-white/50 border-none rounded-2xl p-5 outline-none focus:ring-2 focus:ring-blue-400 text-gray-700 font-medium" style="resize:none;"></textarea>
+                    <button type="submit" class="blue-gradient text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:opacity-90 transition-all">Post Review</button>
+                </form>
+            </div>
+
+            <!-- Reviews List -->
+            <div id="reviews-list" class="space-y-6">
+                <p class="text-center text-blue-300 italic py-10">Loading reviews...</p>
             </div>
         </div>
     </main>

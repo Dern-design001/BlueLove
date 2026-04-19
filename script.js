@@ -374,6 +374,71 @@ document.getElementById('custom-form').onsubmit = (e) => {
     });
 };
 
+// REVIEWS
+let currentRating = 0;
+
+function setRating(val) {
+    currentRating = val;
+    document.querySelectorAll('.star-btn').forEach((btn, i) => {
+        btn.classList.toggle('text-yellow-400', i < val);
+        btn.classList.toggle('text-gray-300', i >= val);
+    });
+}
+
+window.onReviewsUpdate = (reviews) => {
+    const container = document.getElementById('reviews-list');
+    if (!container) return;
+    if (reviews.length === 0) {
+        container.innerHTML = `<p class="text-center text-blue-300 italic py-10">No reviews yet. Be the first!</p>`;
+        return;
+    }
+    container.innerHTML = reviews.map(r => `
+        <div class="glass rounded-[2rem] p-8 animate-up">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 blue-gradient rounded-full flex items-center justify-center text-white font-black text-sm">${r.name[0].toUpperCase()}</div>
+                    <div>
+                        <p class="font-bold text-blue-900">${r.name}</p>
+                        <p class="text-xs text-gray-400">${new Date(r.timestamp).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}</p>
+                    </div>
+                </div>
+                <div class="text-yellow-400 text-lg">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+            </div>
+            <p class="text-gray-600 leading-relaxed">${r.text}</p>
+        </div>
+    `).join('');
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const reviewForm = document.getElementById('review-form');
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!window.currentUser) {
+                pendingAction = () => document.getElementById('review-form').dispatchEvent(new Event('submit'));
+                showGuestLoginModal();
+                return;
+            }
+            if (currentRating === 0) { alert('Please select a star rating.'); return; }
+            const text = document.getElementById('review-text').value;
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerText = 'Posting...';
+            btn.disabled = true;
+            try {
+                await window.submitReview(currentRating, text);
+                e.target.reset();
+                currentRating = 0;
+                setRating(0);
+            } catch(err) {
+                alert('Failed to post review. Please try again.');
+            } finally {
+                btn.innerText = 'Post Review';
+                btn.disabled = false;
+            }
+        });
+    }
+});
+
 // PROFILE & WISHLIST
 let wishlist = JSON.parse(localStorage.getItem('bluelove_wishlist')) || [];
 

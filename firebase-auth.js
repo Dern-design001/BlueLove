@@ -14,6 +14,9 @@ import {
     doc,
     setDoc,
     collection,
+    addDoc,
+    query,
+    orderBy,
     onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -86,6 +89,27 @@ window.saveContentToFirestore = async () => {
 // Save products to Firestore (admin only)
 window.saveProductsToFirestore = async (productList) => {
     await setDoc(productsRef, { list: productList });
+};
+
+// Reviews - real-time listener
+const reviewsRef = collection(db, 'reviews');
+const reviewsQuery = query(reviewsRef, orderBy('timestamp', 'desc'));
+onSnapshot(reviewsQuery, (snapshot) => {
+    const reviews = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (typeof window.onReviewsUpdate === 'function') window.onReviewsUpdate(reviews);
+});
+
+// Submit a review
+window.submitReview = async (rating, text) => {
+    const user = window.currentUser;
+    if (!user) throw new Error('Not logged in');
+    await addDoc(reviewsRef, {
+        name: user.displayName || user.email.split('@')[0],
+        email: user.email,
+        rating,
+        text,
+        timestamp: Date.now()
+    });
 };
 
 // Admin email/password login
