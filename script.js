@@ -14,9 +14,7 @@ let cart = [];
 let currentFilter = 'all';
 let searchQuery = '';
 let isAdmin = localStorage.getItem('bluelove_admin') === 'true';
-const ADMIN_EMAIL = 'bluelove.bracelets.96@gmail.com';
-const ADMIN_PASS = 'admin96'; // Set a default password
-
+// Admin credentials managed by Firebase Auth
 // EMAILJS CONFIGURATION (Replace with your actual keys)
 const EMAILJS_PUBLIC_KEY = '1o5zbJRcCwMSOTviS'; 
 const EMAILJS_SERVICE_ID = 'service_fzox0mb';
@@ -343,27 +341,30 @@ function hideLoginModal() {
     document.getElementById('login-modal').classList.remove('flex');
 }
 
-document.getElementById('login-form').addEventListener('submit', (e) => {
+document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('login-email').value;
     const pass = document.getElementById('login-pass').value;
+    const btn = e.target.querySelector('button');
+    btn.innerText = 'Logging in...';
+    btn.disabled = true;
 
-    if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
-        isAdmin = true;
-        localStorage.setItem('bluelove_admin', 'true');
-        updateAdminUI();
+    try {
+        await window.firebaseLogin(email, pass);
         hideLoginModal();
         alert('Welcome back, Admin! Site editing enabled.');
-    } else {
-        alert('Invalid credentials.');
+    } catch (err) {
+        alert('Invalid credentials. Please try again.');
+    } finally {
+        btn.innerText = 'Login';
+        btn.disabled = false;
     }
 });
 
 function logout() {
-    isAdmin = false;
-    localStorage.removeItem('bluelove_admin');
-    updateAdminUI();
-    alert('Logged out.');
+    window.firebaseLogout().then(() => {
+        alert('Logged out.');
+    });
 }
 
 function updateAdminUI() {
