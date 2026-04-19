@@ -66,9 +66,10 @@ const productsRef = doc(db, 'site', 'products');
 onSnapshot(productsRef, (snapshot) => {
     if (snapshot.exists()) {
         const data = snapshot.data();
-        if (data.list && Array.isArray(data.list)) {
-            window.products = data.list;
-            if (typeof renderProducts === 'function') renderProducts();
+        if (data.list && Array.isArray(data.list) && data.list.length > 0) {
+            if (typeof window.onProductsUpdate === 'function') {
+                window.onProductsUpdate(data.list);
+            }
         }
     }
 });

@@ -9,12 +9,18 @@ const defaultProducts = [
 ];
 
 // STATE MANAGEMENT
-let products = JSON.parse(localStorage.getItem('bluelove_products')) || defaultProducts;
+let products = defaultProducts; // Will be overridden by Firestore
 let cart = [];
 let currentFilter = 'all';
 let searchQuery = '';
 let isAdmin = localStorage.getItem('bluelove_admin') === 'true';
 let pendingAction = null;
+
+// Firestore products callback
+window.onProductsUpdate = (list) => {
+    products = list;
+    renderProducts();
+};
 // Admin credentials managed by Firebase Auth
 // EMAILJS CONFIGURATION
 const EMAILJS_PUBLIC_KEY = '1o5zbJRcCwMSOTviS'; 
