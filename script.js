@@ -789,9 +789,39 @@ function loadPageContent() {
     }
 }
 
+async function subscribeNewsletter() {
+    const msg = document.getElementById('newsletter-msg');
+    const btn = document.getElementById('newsletter-btn');
+
+    if (!window.currentUser) {
+        pendingAction = () => subscribeNewsletter();
+        showGuestLoginModal();
+        return;
+    }
+
+    const email = window.currentUser.email;
+    btn.innerText = 'Subscribing...';
+    btn.disabled = true;
+
+    try {
+        await fetch(SHEETS_WEBHOOK, {
+            method: 'POST',
+            body: JSON.stringify({ type: 'newsletter', email })
+        });
+        btn.innerText = 'Subscribed ✓';
+        msg.innerText = `✨ ${email} subscribed! Welcome to the Bluelove family.`;
+        msg.classList.remove('hidden');
+    } catch (err) {
+        btn.innerText = 'Subscribe to Newsletter';
+        btn.disabled = false;
+        msg.innerText = 'Something went wrong. Please try again.';
+        msg.classList.remove('hidden');
+    }
+}
+
 // Initial Render
 document.addEventListener('DOMContentLoaded', () => {
-    // Newsletter form
+    // Newsletter
     const newsletterForm = document.getElementById('newsletter-form');
     if (newsletterForm) {
         newsletterForm.addEventListener('submit', async (e) => {
