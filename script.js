@@ -14,6 +14,7 @@ let cart = [];
 let currentFilter = 'all';
 let searchQuery = '';
 let isAdmin = localStorage.getItem('bluelove_admin') === 'true';
+let pendingAction = null; // stores action to run after guest login
 // Admin credentials managed by Firebase Auth
 // EMAILJS CONFIGURATION (Replace with your actual keys)
 const EMAILJS_PUBLIC_KEY = '1o5zbJRcCwMSOTviS'; 
@@ -234,8 +235,11 @@ function removeFromCart(id) {
 }
 
 function showCheckout() {
-    document.getElementById('checkout-modal').classList.remove('hidden');
-    document.getElementById('checkout-modal').classList.add('flex');
+    requireLogin(() => {
+        document.getElementById('checkout-modal').classList.remove('hidden');
+        document.getElementById('checkout-modal').classList.add('flex');
+        updateGuestUI();
+    });
 }
 
 function hideCheckout() {
@@ -292,6 +296,7 @@ document.getElementById('order-form').onsubmit = (e) => {
 // Customization Form Submission
 document.getElementById('custom-form').onsubmit = (e) => {
     e.preventDefault();
+    requireLogin(() => {
     const btn = e.target.querySelector('button');
     const originalText = btn.innerText;
     btn.innerText = "Sending Vision...";
@@ -305,7 +310,6 @@ document.getElementById('custom-form').onsubmit = (e) => {
     };
 
     if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID') {
-        // Fallback for placeholder
         setTimeout(() => {
             alert("✨ (Demo Mode) Your custom request has been sent! We'll contact you shortly.");
             btn.innerText = originalText;
@@ -328,7 +332,72 @@ document.getElementById('custom-form').onsubmit = (e) => {
             btn.innerText = originalText;
             btn.disabled = false;
         });
+    });
 };
+
+// GUEST AUTH UI
+function updateGuestUI() {
+    const user = window.currentUser;
+    if (user && !window.isAdmin) {
+        // Auto-fill checkout fields if available
+        const nameEl = document.getElementById('cust-name');
+        const emailEl = document.getElementById('cust-email');
+        if (nameEl && !nameEl.value) nameEl.value = user.displayName || '';
+        if (emailEl && !emailEl.value) emailEl.value = user.email || '';
+    }
+}
+
+function requireLogin(action) {
+    if (window.currentUser) {
+        action();
+    } else {
+        pendingAction = action;
+        showGuestLoginModal();
+    }
+}
+
+function showGuestLoginModal() {
+    const modal = document.getElementById('guest-login-modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function hideGuestLoginModal() {
+    const modal = document.getElementById('guest-login-modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+async function handleGoogleLogin() {
+    try {
+        await window.firebaseGoogleLogin();
+        hideGuestLoginModal();
+        if (pendingAction) { pendingAction(); pendingAction = null; }
+    } catch (e) {
+        alert('Google sign-in failed. Please try again.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('guest-login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('guest-email').value;
+        const pass = document.getElementById('guest-pass').value;
+        const btn = e.target.querySelector('button');
+        btn.innerText = 'Signing in...';
+        btn.disabled = true;
+        try {
+            await window.firebaseGuestLogin(email, pass);
+            hideGuestLoginModal();
+            if (pendingAction) { pendingAction(); pendingAction = null; }
+        } catch (err) {
+            alert('Invalid credentials. Please try again.');
+        } finally {
+            btn.innerText = 'Sign In';
+            btn.disabled = false;
+        }
+    });
+});
 
 // ADMIN LOGIN LOGIC
 function showLoginModal() {

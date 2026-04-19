@@ -280,6 +280,36 @@
         </div>
     </div>
 
+    <!-- Guest Login Modal -->
+    <div id="guest-login-modal" class="fixed inset-0 bg-blue-900/40 backdrop-blur-md z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-sm p-10 animate-up shadow-2xl">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-2xl font-extrabold text-blue-900">Sign in to continue</h2>
+                <button onclick="hideGuestLoginModal()" class="text-gray-400"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            </div>
+            <p class="text-gray-400 text-sm mb-8">You need an account to do that.</p>
+
+            <!-- Google Sign In -->
+            <button onclick="handleGoogleLogin()" class="w-full flex items-center justify-center gap-3 border border-gray-200 rounded-2xl px-5 py-3 font-bold text-gray-700 hover:bg-gray-50 transition-all mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+                Continue with Google
+            </button>
+
+            <div class="flex items-center gap-4 mb-4">
+                <div class="h-px bg-gray-100 flex-grow"></div>
+                <span class="text-[10px] text-gray-400 font-bold uppercase">or</span>
+                <div class="h-px bg-gray-100 flex-grow"></div>
+            </div>
+
+            <!-- Email/Password -->
+            <form id="guest-login-form" class="space-y-3">
+                <input type="email" id="guest-email" required placeholder="Email Address" class="w-full bg-gray-50 border-none rounded-xl px-5 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                <input type="password" id="guest-pass" required placeholder="Password" class="w-full bg-gray-50 border-none rounded-xl px-5 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                <button type="submit" class="w-full blue-gradient text-white py-3 rounded-2xl font-bold shadow-lg hover:opacity-90 transition-all">Sign In</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Login Modal -->
     <div id="login-modal" class="fixed inset-0 bg-blue-900/40 backdrop-blur-md z-[100] hidden items-center justify-center p-4">
         <div class="bg-white rounded-[2.5rem] w-full max-w-sm p-10 animate-up shadow-2xl">
