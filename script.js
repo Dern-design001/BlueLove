@@ -12,6 +12,7 @@ const defaultProducts = [
 let products = JSON.parse(localStorage.getItem('bluelove_products')) || defaultProducts;
 let cart = [];
 let currentFilter = 'all';
+let searchQuery = '';
 let isAdmin = localStorage.getItem('bluelove_admin') === 'true';
 const ADMIN_EMAIL = 'bluelove.bracelets.96@gmail.com';
 const ADMIN_PASS = 'admin96'; // Set a default password
@@ -115,11 +116,33 @@ function filterShop(category) {
     });
 }
 
+function handleSearch(value) {
+    searchQuery = value.trim().toLowerCase();
+    const grid = document.getElementById('product-grid');
+    const custom = document.getElementById('custom-view');
+    // Exit customize view when searching
+    if (searchQuery && currentFilter === 'customize') {
+        currentFilter = 'all';
+        grid.classList.remove('hidden');
+        custom.classList.add('hidden');
+    }
+    renderProducts();
+}
+
 function renderProducts() {
     const grid = document.getElementById('product-grid');
-    const filtered = products.filter(p => currentFilter === 'all' || p.category === currentFilter);
-    
-    grid.innerHTML = filtered.map(p => `
+    let filtered = products.filter(p => currentFilter === 'all' || p.category === currentFilter);
+    if (searchQuery) {
+        filtered = filtered.filter(p =>
+            p.name.toLowerCase().includes(searchQuery) ||
+            p.desc.toLowerCase().includes(searchQuery) ||
+            p.category.toLowerCase().includes(searchQuery)
+        );
+    }
+
+    grid.innerHTML = filtered.length === 0
+        ? `<div class="col-span-3 text-center py-20 text-gray-400 font-medium italic">No products found for "${searchQuery}"</div>`
+        : filtered.map(p => `
         <div class="product-card glass p-5 rounded-[2.5rem] flex flex-col h-full animate-up relative">
             ${isAdmin ? `
             <div class="absolute top-2 right-2 flex gap-2 z-10">
