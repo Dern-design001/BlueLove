@@ -193,7 +193,7 @@
             </div>
 
             <!-- Instagram Section -->
-            <div class="glass p-12 rounded-[3rem] text-center animate-up relative overflow-hidden group">
+            <div class="glass p-12 rounded-[3rem] text-center animate-up relative overflow-hidden group mb-8">
                 <div class="absolute inset-0 bg-gradient-to-tr from-purple-50 to-pink-50 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                 <div class="relative z-10">
                     <div class="inline-flex w-16 h-16 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 rounded-2xl items-center justify-center text-white shadow-lg mb-6">
@@ -202,6 +202,22 @@
                     <h3 class="text-2xl font-bold text-gray-900 mb-2">Join our Instagram community</h3>
                     <p class="text-gray-500 mb-6 font-medium italic">Follow us for drops, behind-the-scenes, and styling tips!</p>
                     <a href="https://www.instagram.com/bluelove_bracelets/?hl=en" target="_blank" class="inline-block bg-white border border-gray-100 px-8 py-3 rounded-2xl font-bold text-blue-900 shadow-sm hover:shadow-md transition-all">@bluelove_bracelets</a>
+                </div>
+            </div>
+
+            <!-- Newsletter Section -->
+            <div class="blue-gradient p-12 rounded-[3rem] text-center animate-up relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="inline-flex w-16 h-16 bg-white/20 rounded-2xl items-center justify-center text-white shadow-lg mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Stay in the loop</h3>
+                    <p class="text-blue-100 mb-8 italic">Get new drops, exclusive deals and updates straight to your inbox.</p>
+                    <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                        <input type="email" id="newsletter-email" required placeholder="Your email address" class="flex-grow bg-white/20 border border-white/30 text-white placeholder-blue-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-white/50 font-medium">
+                        <button type="submit" class="bg-white text-blue-700 px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-blue-50 transition-all whitespace-nowrap">Subscribe</button>
+                    </form>
+                    <p id="newsletter-msg" class="text-blue-200 text-sm mt-4 hidden"></p>
                 </div>
             </div>
         </div>

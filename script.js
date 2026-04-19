@@ -278,7 +278,7 @@ function hideCheckout() {
 function logOrderToSheets(data) {
     fetch(SHEETS_WEBHOOK, {
         method: 'POST',
-        body: JSON.stringify(data)
+        body: JSON.stringify({ type: 'order', ...data })
     }).catch(err => console.error('Sheets log failed:', err));
 }
 
@@ -791,13 +791,39 @@ function loadPageContent() {
 
 // Initial Render
 document.addEventListener('DOMContentLoaded', () => {
+    // Newsletter form
+    const newsletterForm = document.getElementById('newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('newsletter-email').value;
+            const btn = e.target.querySelector('button');
+            const msg = document.getElementById('newsletter-msg');
+            btn.innerText = 'Subscribing...';
+            btn.disabled = true;
+            try {
+                await fetch(SHEETS_WEBHOOK, {
+                    method: 'POST',
+                    body: JSON.stringify({ type: 'newsletter', email })
+                });
+                msg.innerText = '✨ You\'re subscribed! Welcome to the Bluelove family.';
+                msg.classList.remove('hidden');
+                e.target.reset();
+            } catch (err) {
+                msg.innerText = 'Something went wrong. Please try again.';
+                msg.classList.remove('hidden');
+            } finally {
+                btn.innerText = 'Subscribe';
+                btn.disabled = false;
+            }
+        });
+    }
+
     loadPageContent();
     renderProducts();
     updateCartUI();
     updateAdminUI();
 
-    // Show welcome login modal if not already signed in
-    // Wait briefly for Firebase auth state to resolve
     setTimeout(() => {
         if (!window.currentUser) {
             showGuestLoginModal();
