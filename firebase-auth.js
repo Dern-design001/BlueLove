@@ -12,8 +12,8 @@ import {
 import {
     getFirestore,
     doc,
-    getDoc,
     setDoc,
+    collection,
     onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -61,6 +61,18 @@ onSnapshot(contentRef, (snapshot) => {
     }
 });
 
+// Listen for real-time product changes from Firestore
+const productsRef = doc(db, 'site', 'products');
+onSnapshot(productsRef, (snapshot) => {
+    if (snapshot.exists()) {
+        const data = snapshot.data();
+        if (data.list && Array.isArray(data.list)) {
+            window.products = data.list;
+            if (typeof renderProducts === 'function') renderProducts();
+        }
+    }
+});
+
 // Save page content to Firestore (admin only)
 window.saveContentToFirestore = async () => {
     const content = {};
@@ -68,6 +80,11 @@ window.saveContentToFirestore = async () => {
         content[el.id] = el.innerText;
     });
     await setDoc(contentRef, content);
+};
+
+// Save products to Firestore (admin only)
+window.saveProductsToFirestore = async (productList) => {
+    await setDoc(productsRef, { list: productList });
 };
 
 // Admin email/password login

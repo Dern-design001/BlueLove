@@ -751,6 +751,10 @@ document.getElementById('product-form').addEventListener('submit', (e) => {
 
 function saveProductsToLocal() {
     localStorage.setItem('bluelove_products', JSON.stringify(products));
+    // Sync to Firestore for real-time updates across all visitors
+    if (typeof window.saveProductsToFirestore === 'function') {
+        window.saveProductsToFirestore(products);
+    }
 }
 
 // WEBSITE CONTENT PERSISTENCE (CMS-LITE)
