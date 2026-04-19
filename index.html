@@ -293,7 +293,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
             </div>
-            <p class="text-gray-400 text-sm mb-6">Sign in for a better experience or continue browsing as a guest.</p>
+            <p class="text-gray-400 text-sm mb-5">Sign in for a better experience or continue browsing as a guest.</p>
 
             <!-- Google Sign In -->
             <button onclick="handleGoogleLogin()" class="w-full flex items-center justify-center gap-3 border border-gray-200 rounded-2xl px-5 py-3 font-bold text-gray-700 hover:bg-gray-50 transition-all mb-4">
@@ -307,11 +307,25 @@
                 <div class="h-px bg-gray-100 flex-grow"></div>
             </div>
 
-            <!-- Email/Password -->
+            <!-- Sign In / Sign Up Tabs -->
+            <div class="flex bg-gray-100 rounded-2xl p-1 mb-4">
+                <button id="tab-signin" onclick="switchAuthTab('signin')" class="flex-1 py-2 rounded-xl text-sm font-bold bg-white shadow-sm text-blue-700 transition-all">Sign In</button>
+                <button id="tab-signup" onclick="switchAuthTab('signup')" class="flex-1 py-2 rounded-xl text-sm font-bold text-gray-400 transition-all">Sign Up</button>
+            </div>
+
+            <!-- Sign In Form -->
             <form id="guest-login-form" class="space-y-3">
                 <input type="email" id="guest-email" required placeholder="Email Address" class="w-full bg-gray-50 border-none rounded-xl px-5 py-3 outline-none focus:ring-2 focus:ring-blue-400">
                 <input type="password" id="guest-pass" required placeholder="Password" class="w-full bg-gray-50 border-none rounded-xl px-5 py-3 outline-none focus:ring-2 focus:ring-blue-400">
                 <button type="submit" class="w-full blue-gradient text-white py-3 rounded-2xl font-bold shadow-lg hover:opacity-90 transition-all">Sign In</button>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="guest-signup-form" class="space-y-3 hidden">
+                <input type="text" id="signup-name" required placeholder="Your Name" class="w-full bg-gray-50 border-none rounded-xl px-5 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                <input type="email" id="signup-email" required placeholder="Email Address" class="w-full bg-gray-50 border-none rounded-xl px-5 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                <input type="password" id="signup-pass" required placeholder="Password (min 6 chars)" class="w-full bg-gray-50 border-none rounded-xl px-5 py-3 outline-none focus:ring-2 focus:ring-blue-400">
+                <button type="submit" class="w-full blue-gradient text-white py-3 rounded-2xl font-bold shadow-lg hover:opacity-90 transition-all">Create Account</button>
             </form>
 
             <button onclick="continueAsGuest()" class="w-full mt-4 text-sm text-gray-400 hover:text-gray-600 transition-colors font-medium">Continue as Guest →</button>

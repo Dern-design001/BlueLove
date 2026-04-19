@@ -2,6 +2,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import {
     getAuth,
     signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    updateProfile,
     signInWithPopup,
     GoogleAuthProvider,
     signOut,
@@ -52,6 +54,12 @@ window.firebaseGoogleLogin = async () => {
 // Guest email/password login
 window.firebaseGuestLogin = async (email, password) => {
     await signInWithEmailAndPassword(auth, email, password);
+};
+
+// Guest sign up
+window.firebaseSignUp = async (name, email, password) => {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(cred.user, { displayName: name });
 };
 
 window.firebaseLogout = async () => {

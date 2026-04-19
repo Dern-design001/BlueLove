@@ -356,6 +356,28 @@ function requireLogin(action) {
     }
 }
 
+function switchAuthTab(tab) {
+    const signinForm = document.getElementById('guest-login-form');
+    const signupForm = document.getElementById('guest-signup-form');
+    const signinTab = document.getElementById('tab-signin');
+    const signupTab = document.getElementById('tab-signup');
+    if (tab === 'signin') {
+        signinForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+        signinTab.classList.add('bg-white', 'shadow-sm', 'text-blue-700');
+        signinTab.classList.remove('text-gray-400');
+        signupTab.classList.remove('bg-white', 'shadow-sm', 'text-blue-700');
+        signupTab.classList.add('text-gray-400');
+    } else {
+        signupForm.classList.remove('hidden');
+        signinForm.classList.add('hidden');
+        signupTab.classList.add('bg-white', 'shadow-sm', 'text-blue-700');
+        signupTab.classList.remove('text-gray-400');
+        signinTab.classList.remove('bg-white', 'shadow-sm', 'text-blue-700');
+        signinTab.classList.add('text-gray-400');
+    }
+}
+
 function continueAsGuest() {
     hideGuestLoginModal();
     if (pendingAction) { pendingAction(); pendingAction = null; }
@@ -398,6 +420,26 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Invalid credentials. Please try again.');
         } finally {
             btn.innerText = 'Sign In';
+            btn.disabled = false;
+        }
+    });
+
+    document.getElementById('guest-signup-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('signup-name').value;
+        const email = document.getElementById('signup-email').value;
+        const pass = document.getElementById('signup-pass').value;
+        const btn = e.target.querySelector('button');
+        btn.innerText = 'Creating account...';
+        btn.disabled = true;
+        try {
+            await window.firebaseSignUp(name, email, pass);
+            hideGuestLoginModal();
+            if (pendingAction) { pendingAction(); pendingAction = null; }
+        } catch (err) {
+            alert(err.message || 'Sign up failed. Please try again.');
+        } finally {
+            btn.innerText = 'Create Account';
             btn.disabled = false;
         }
     });
