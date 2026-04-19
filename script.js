@@ -159,6 +159,9 @@ function renderProducts() {
             <div class="w-full aspect-[4/5] rounded-[2rem] mb-6 relative overflow-hidden flex items-center justify-center shadow-inner group">
                  <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                  <span class="absolute top-5 left-5 bg-white/90 backdrop-blur px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-blue-600 shadow-sm">${p.category}</span>
+                 <button onclick="toggleWishlist(${p.id})" class="absolute top-5 right-5 w-9 h-9 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm hover:scale-110 transition-all wishlist-btn-${p.id}">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="${isWishlisted(p.id) ? '#ef4444' : 'none'}" stroke="${isWishlisted(p.id) ? '#ef4444' : '#9ca3af'}" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                 </button>
             </div>
             <div class="px-2 pb-2 flex-grow flex flex-col text-left">
                 <h3 class="text-2xl font-bold text-blue-900 mb-2 whitespace-pre-wrap">${p.name}</h3>
@@ -365,18 +368,114 @@ document.getElementById('custom-form').onsubmit = (e) => {
     });
 };
 
-// GUEST AUTH UI
-function updateGuestUI() {
-    const user = window.currentUser;
-    if (user && !window.isAdmin) {
-        // Auto-fill checkout fields if available
-        const nameEl = document.getElementById('cust-name');
-        const emailEl = document.getElementById('cust-email');
-        if (nameEl && !nameEl.value) nameEl.value = user.displayName || '';
-        if (emailEl && !emailEl.value) emailEl.value = user.email || '';
+// PROFILE & WISHLIST
+let wishlist = JSON.parse(localStorage.getItem('bluelove_wishlist')) || [];
+
+function isWishlisted(id) {
+    return wishlist.includes(id);
+}
+
+function toggleWishlist(id) {
+    if (!window.currentUser) { showGuestLoginModal(); return; }
+    if (isWishlisted(id)) {
+        wishlist = wishlist.filter(w => w !== id);
+    } else {
+        wishlist.push(id);
+    }
+    localStorage.setItem('bluelove_wishlist', JSON.stringify(wishlist));
+    renderProducts();
+    renderWishlist();
+}
+
+function renderWishlist() {
+    const container = document.getElementById('wishlist-items');
+    if (!container) return;
+    const items = products.filter(p => wishlist.includes(p.id));
+    if (items.length === 0) {
+        container.innerHTML = `<p class="text-blue-300 italic text-sm text-center py-8">Your wishlist is empty...</p>`;
+        return;
+    }
+    container.innerHTML = items.map(p => `
+        <div class="flex gap-4 items-center p-3 bg-blue-50/50 rounded-2xl">
+            <img src="${p.image}" alt="${p.name}" class="w-14 h-14 rounded-xl object-cover flex-shrink-0">
+            <div class="flex-grow">
+                <p class="font-bold text-blue-900 text-sm leading-tight">${p.name}</p>
+                <p class="text-blue-600 font-black text-sm">₹${p.price}</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="addToCart(${p.id})" class="p-2 blue-gradient text-white rounded-xl text-xs font-bold shadow-sm">Add</button>
+                <button onclick="toggleWishlist(${p.id})" class="p-2 bg-red-50 text-red-400 rounded-xl hover:bg-red-100 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function toggleProfile() {
+    const sidebar = document.getElementById('profile-sidebar');
+    const overlay = document.getElementById('profile-overlay');
+    sidebar.classList.toggle('translate-x-full');
+    overlay.classList.toggle('hidden');
+    if (!sidebar.classList.contains('translate-x-full')) {
+        loadProfileData();
+        renderWishlist();
     }
 }
 
+function loadProfileData() {
+    const user = window.currentUser;
+    if (!user) return;
+    const saved = JSON.parse(localStorage.getItem(`bluelove_profile_${user.uid}`)) || {};
+    const name = saved.name || user.displayName || '';
+    const initial = name ? name[0].toUpperCase() : (user.email ? user.email[0].toUpperCase() : '?');
+    document.getElementById('profile-avatar').innerText = initial;
+    document.getElementById('profile-display-name').innerText = name || 'User';
+    document.getElementById('profile-display-email').innerText = user.email || '';
+    document.getElementById('profile-name').value = name;
+    document.getElementById('profile-phone').value = saved.phone || '';
+    document.getElementById('profile-address').value = saved.address || '';
+    document.getElementById('profile-city').value = saved.city || '';
+}
+
+function updateGuestUI() {
+    const user = window.currentUser;
+    const profileBtn = document.getElementById('profile-btn');
+    if (user) {
+        profileBtn?.classList.remove('hidden');
+        if (document.getElementById('cust-name') && !document.getElementById('cust-name').value) {
+            const saved = JSON.parse(localStorage.getItem(`bluelove_profile_${user.uid}`)) || {};
+            document.getElementById('cust-name').value = saved.name || user.displayName || '';
+            document.getElementById('cust-email').value = user.email || '';
+            document.getElementById('cust-phone') && (document.getElementById('cust-phone').value = saved.phone || '');
+            document.getElementById('cust-addr') && (document.getElementById('cust-addr').value = saved.address || '');
+            document.getElementById('cust-city') && (document.getElementById('cust-city').value = saved.city || '');
+        }
+    } else {
+        profileBtn?.classList.add('hidden');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('profile-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const user = window.currentUser;
+        if (!user) return;
+        const profileData = {
+            name: document.getElementById('profile-name').value,
+            phone: document.getElementById('profile-phone').value,
+            address: document.getElementById('profile-address').value,
+            city: document.getElementById('profile-city').value
+        };
+        localStorage.setItem(`bluelove_profile_${user.uid}`, JSON.stringify(profileData));
+        loadProfileData();
+        const btn = e.target.querySelector('button');
+        btn.innerText = 'Saved ✓';
+        setTimeout(() => btn.innerText = 'Save Changes', 2000);
+    });
+});
+
+// GUEST AUTH UI
 function requireLogin(action) {
     if (window.currentUser) {
         action();

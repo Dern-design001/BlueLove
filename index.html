@@ -31,10 +31,17 @@
             <button onclick="navigateTo('about')" class="nav-btn hover:text-blue-600 transition-colors" data-page="about">About</button>
         </div>
 
-        <button onclick="toggleCart()" class="relative p-2 bg-white rounded-full shadow-sm hover:shadow-md transition-all group">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
-            <span id="cart-count" class="absolute -top-1 -right-1 blue-gradient text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
-        </button>
+        <div class="flex items-center gap-2">
+            <!-- Profile Button -->
+            <button onclick="toggleProfile()" id="profile-btn" class="relative p-2 bg-white rounded-full shadow-sm hover:shadow-md transition-all hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </button>
+            <!-- Cart Button -->
+            <button onclick="toggleCart()" class="relative p-2 bg-white rounded-full shadow-sm hover:shadow-md transition-all group">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                <span id="cart-count" class="absolute -top-1 -right-1 blue-gradient text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+            </button>
+        </div>
     </nav>
 
     <!-- HOME PAGE -->
@@ -236,6 +243,58 @@
             </div>
         </div>
     </footer>
+
+    <!-- Profile Sidebar -->
+    <div id="profile-overlay" onclick="toggleProfile()" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] hidden transition-opacity"></div>
+    <div id="profile-sidebar" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-[70] shadow-2xl cart-sidebar translate-x-full flex flex-col overflow-y-auto">
+        <div class="p-8 border-b flex justify-between items-center">
+            <h3 class="text-2xl font-extrabold text-blue-900">My Profile</h3>
+            <button onclick="toggleProfile()" class="text-gray-400 hover:text-gray-900"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        </div>
+
+        <!-- Profile Info -->
+        <div class="p-8 border-b">
+            <div class="flex items-center gap-4 mb-6">
+                <div id="profile-avatar" class="w-16 h-16 blue-gradient rounded-full flex items-center justify-center text-white text-2xl font-black shadow-lg">?</div>
+                <div>
+                    <p id="profile-display-name" class="text-lg font-extrabold text-blue-900">Guest</p>
+                    <p id="profile-display-email" class="text-sm text-gray-400"></p>
+                </div>
+            </div>
+            <form id="profile-form" class="space-y-3">
+                <div>
+                    <label class="text-xs font-bold text-gray-400 uppercase ml-1">Name</label>
+                    <input type="text" id="profile-name" placeholder="Your Name" class="w-full bg-gray-50 border-none rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400 mt-1">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-400 uppercase ml-1">Phone</label>
+                    <input type="tel" id="profile-phone" placeholder="Phone Number" class="w-full bg-gray-50 border-none rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400 mt-1">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-400 uppercase ml-1">Address</label>
+                    <input type="text" id="profile-address" placeholder="Delivery Address" class="w-full bg-gray-50 border-none rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400 mt-1">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-400 uppercase ml-1">City</label>
+                    <input type="text" id="profile-city" placeholder="City" class="w-full bg-gray-50 border-none rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-400 mt-1">
+                </div>
+                <button type="submit" class="w-full blue-gradient text-white py-3 rounded-2xl font-bold shadow-md hover:opacity-90 transition-all">Save Changes</button>
+            </form>
+        </div>
+
+        <!-- Wishlist -->
+        <div class="p-8 flex-grow">
+            <h4 class="text-lg font-extrabold text-blue-900 mb-4">My Wishlist</h4>
+            <div id="wishlist-items" class="space-y-4">
+                <p class="text-blue-300 italic text-sm text-center py-8">Your wishlist is empty...</p>
+            </div>
+        </div>
+
+        <!-- Logout -->
+        <div class="p-8 border-t">
+            <button onclick="logout()" class="w-full py-3 rounded-2xl border border-red-200 text-red-400 font-bold hover:bg-red-50 transition-all">Sign Out</button>
+        </div>
+    </div>
 
     <!-- Cart Sidebar -->
     <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] hidden transition-opacity"></div>
