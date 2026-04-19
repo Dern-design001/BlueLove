@@ -9,6 +9,13 @@ import {
     signOut,
     onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAfD_zEwj66WftJ1ueALHdmJ4Tn6QsPcjc",
@@ -21,6 +28,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
 const ADMIN_EMAIL = 'bluelove.bracelets.96@gmail.com';
@@ -41,6 +49,27 @@ onAuthStateChanged(auth, (user) => {
     if (typeof updateGuestUI === 'function') updateGuestUI();
 });
 
+// Listen for real-time content changes from Firestore
+const contentRef = doc(db, 'site', 'content');
+onSnapshot(contentRef, (snapshot) => {
+    if (snapshot.exists()) {
+        const content = snapshot.data();
+        Object.keys(content).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerText = content[id];
+        });
+    }
+});
+
+// Save page content to Firestore (admin only)
+window.saveContentToFirestore = async () => {
+    const content = {};
+    document.querySelectorAll('[id^="edit-"]').forEach(el => {
+        content[el.id] = el.innerText;
+    });
+    await setDoc(contentRef, content);
+};
+
 // Admin email/password login
 window.firebaseLogin = async (email, password) => {
     await signInWithEmailAndPassword(auth, email, password);
@@ -56,7 +85,7 @@ window.firebaseGuestLogin = async (email, password) => {
     await signInWithEmailAndPassword(auth, email, password);
 };
 
-// Guest sign up
+// Sign up
 window.firebaseSignUp = async (name, email, password) => {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(cred.user, { displayName: name });

@@ -772,6 +772,11 @@ function enableContentEditing(enable) {
 }
 
 function savePageContent() {
+    // Save to Firestore for real-time sync across all visitors
+    if (typeof window.saveContentToFirestore === 'function') {
+        window.saveContentToFirestore();
+    }
+    // Also keep localStorage as fallback
     const content = {};
     document.querySelectorAll('[id^="edit-"]').forEach(el => {
         content[el.id] = el.innerText;
