@@ -356,6 +356,11 @@ function requireLogin(action) {
     }
 }
 
+function continueAsGuest() {
+    hideGuestLoginModal();
+    if (pendingAction) { pendingAction(); pendingAction = null; }
+}
+
 function showGuestLoginModal() {
     const modal = document.getElementById('guest-login-modal');
     modal.classList.remove('hidden');
@@ -377,7 +382,6 @@ async function handleGoogleLogin() {
         alert('Google sign-in failed. Please try again.');
     }
 }
-
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('guest-login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -612,5 +616,13 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPageContent();
     renderProducts();
     updateCartUI();
-    updateAdminUI(); // Re-apply admin state if logged in
+    updateAdminUI();
+
+    // Show welcome login modal if not already signed in
+    // Wait briefly for Firebase auth state to resolve
+    setTimeout(() => {
+        if (!window.currentUser) {
+            showGuestLoginModal();
+        }
+    }, 800);
 });

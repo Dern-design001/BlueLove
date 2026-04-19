@@ -283,11 +283,17 @@
     <!-- Guest Login Modal -->
     <div id="guest-login-modal" class="fixed inset-0 bg-blue-900/40 backdrop-blur-md z-[100] hidden items-center justify-center p-4">
         <div class="bg-white rounded-[2.5rem] w-full max-w-sm p-10 animate-up shadow-2xl">
+            <!-- Close only shown when triggered mid-session, not on page load -->
             <div class="flex justify-between items-center mb-2">
-                <h2 class="text-2xl font-extrabold text-blue-900">Sign in to continue</h2>
-                <button onclick="hideGuestLoginModal()" class="text-gray-400"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                <div>
+                    <h2 class="text-2xl font-extrabold text-blue-900">Welcome to Bluelove</h2>
+                    <p class="text-blue-400 text-xs italic mt-1">"We customize for your comfort"</p>
+                </div>
+                <button id="guest-modal-close" onclick="continueAsGuest()" class="text-gray-300 hover:text-gray-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
             </div>
-            <p class="text-gray-400 text-sm mb-8">You need an account to do that.</p>
+            <p class="text-gray-400 text-sm mb-6">Sign in for a better experience or continue browsing as a guest.</p>
 
             <!-- Google Sign In -->
             <button onclick="handleGoogleLogin()" class="w-full flex items-center justify-center gap-3 border border-gray-200 rounded-2xl px-5 py-3 font-bold text-gray-700 hover:bg-gray-50 transition-all mb-4">
@@ -307,6 +313,8 @@
                 <input type="password" id="guest-pass" required placeholder="Password" class="w-full bg-gray-50 border-none rounded-xl px-5 py-3 outline-none focus:ring-2 focus:ring-blue-400">
                 <button type="submit" class="w-full blue-gradient text-white py-3 rounded-2xl font-bold shadow-lg hover:opacity-90 transition-all">Sign In</button>
             </form>
+
+            <button onclick="continueAsGuest()" class="w-full mt-4 text-sm text-gray-400 hover:text-gray-600 transition-colors font-medium">Continue as Guest →</button>
         </div>
     </div>
 
