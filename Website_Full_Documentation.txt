@@ -1,0 +1,107 @@
+========================================================================
+             BLUELOVE BRACELETS - COMPLETE WEBSITE DOCUMENTATION
+========================================================================
+
+1. OVERVIEW
+-----------
+Bluelove Bracelets is a premium e-commerce platform for handcrafted jewelry, 
+phone accessories, and mystery boxes. The website features a modern, 
+aesthetic design with dynamic animations, guest/user authentication via 
+Firebase, real-time product management, and integrated order processing.
+
+Theme: "We customize for your comfort"
+Key Technologies: HTML5, Tailwind CSS, JavaScript(ES6+), Firebase (Auth & Firestore), 
+EmailJS, Google Sheets API.
+
+
+2. WEBSITE STRUCTURE (WHAT'S INSIDE)
+------------------------------------
+The website is a single-page application (SPA) with a custom navigation system:
+
+• HOME PAGE: Hero section with a brand introduction and "Shop Collection" call-to-action.
+• SHOP PAGE: The main catalog with categories, search functionality, and a custom order form.
+• ABOUT PAGE: Brand story, community stats, Instagram integration, and newsletter subscription.
+• REVIEWS PAGE: Customer feedback section with star ratings and a submission form.
+• NAVIGATION BAR: Persistent top bar with page links, profile access, and a live cart.
+• FOOTER: Site links, administrative login, and brand social information.
+• WHATSAPP: Floating chat button available on every page for instant support.
+• SIDEBARS: 
+    - Cart Sidebar: Manages chosen items, checkout, and direct WhatsApp chat for order queries.
+    - Profile Sidebar: Manages user data and personal wishlist.
+• MODALS: 
+    - Guest/User Login Modal
+    - Admin Login Modal
+    - Checkout Details Modal
+    - QR UPI Payment Modal
+    - Product Management Modal (Admin Only)
+
+
+3. BUTTON ACTIONS & FUNCTIONALITY
+---------------------------------
+
+NAVBAR:
+• Logo/Name: Navigates to the Home page.
+• Home/Shop/About/Reviews Links: Navigate to respective sections.
+• Profile Icon: Opens the Profile Sidebar.
+• Cart Icon: Opens the Cart Sidebar. Shows current item count in a red badge.
+
+HOME PAGE:
+• Shop Collection Button: Redirects the user to the Shop catalog.
+• Our Story Button: Redirects the user to the About section.
+
+SHOP PAGE:
+• Search Input: Filters products in real-time as you type.
+• Category Buttons (All, Bracelets, Boxes, Hangs): Filters the product grid by type.
+• Customize Button: Hides standard products and reveals a "Bespoke Request" form.
+• Wishlist (Heart) Icon: Adds/removes item from user's wishlist (requires login).
+• Add to Cart Button: Adds item to cart with a pulse animation on the cart badge.
+• Send Customization Request Button: Submits a custom order via EmailJS and logs it.
+
+ABOUT PAGE:
+• Instagram Link (@bluelove_bracelets): Opens the official brand Instagram in a new tab.
+• Subscribe to Newsletter Button: Captures user email and logs it to Google Sheets.
+
+REVIEWS PAGE:
+• Star Rating (Stars 1-5): Sets the rating for a new review.
+• Post Review Button: Submits customer feedback to the database (requires login).
+
+CART SIDEBAR:
+• "+" / "-" Buttons: Adjust item quantity.
+• Trash Icon: Removes an item from the cart entirely.
+• Proceed to Checkout Button: Opens the Shipping Details modal.
+
+CHECKOUT & PAYMENT:
+• Confirm Order: Submits order details (Name, Address, Items) to Google Sheets/EmailJS.
+• I've Paid ✓ (QR Modal): Clears the cart and displays a final success message.
+• Cancel (QR Modal): Closes the payment screen without clearing the cart.
+
+FOOTER:
+• Admin Login: Opens the secret login modal for site management.
+• Go (Newsletter): Fast subscription for the newsletter.
+
+ADMIN FEATURES (LOGGED IN):
+• Add Product Button: Opens a modal to create a new product (Name, Price, Category, Image).
+• Edit (Pencil) Icon: Opens modal to modify existing product data.
+• Delete (Trash) Icon: Permanently removes a product from the site.
+• Inline Editing: Admin can click and edit brand text (titles, quotes) directly on the page.
+
+
+4. SYSTEM INTEGRATIONS
+----------------------
+• FIREBASE AUTH: Handles User/Admin sign-in (Email or Google).
+• FIREBASE FIRESTORE: Stores products and customer reviews in real-time.
+• EMAILJS: Sends instant notifications to the owner when an order or custom request is placed.
+• GOOGLE SHEETS: Acts as a database for Orders and Newsletter subscribers for easy management.
+• LOCAL STORAGE: Remembers the user's cart, wishlist, and profile details locally.
+
+
+5. VISUAL EFFECTS
+-----------------
+• Hearts & Sparkles: An animated background layer of falling icons.
+• Glassmorphism: Semi-transparent, blurred layers for a premium feel.
+• Scroll Effects: The navbar shrinks and changes transparency as the user scrolls.
+• Animation: All page transitions and element appearances use "animate-up" CSS effects.
+
+========================================================================
+                        END OF DOCUMENTATION
+========================================================================

@@ -1,0 +1,171 @@
+====================================================
+  BLUELOVE BRACELETS - WEBSITE FULL FEATURE REPORT
+  URL: https://bluelove.pages.dev
+====================================================
+
+----------------------------------------------------
+1. NAVIGATION BAR (Top of every page)
+----------------------------------------------------
+- Bluelove Logo / Name        → Clicking takes user back to Home page
+- Home (nav link)             → Navigates to Home page
+- Shop (nav link)             → Navigates to Shop page
+- About (nav link)            → Navigates to About page
+- Profile Icon (person icon)  → Opens Profile sidebar (visible only when logged in)
+- Cart Icon                   → Opens Cart sidebar (shows item count badge)
+
+----------------------------------------------------
+2. HOME PAGE
+----------------------------------------------------
+- "Shop Collection" button    → Navigates to Shop page
+- "Our Story" button          → Navigates to About page
+- Hero image                  → Decorative, no action
+- Animated hearts/sparkles    → Background decoration, no action
+
+----------------------------------------------------
+3. SHOP PAGE
+----------------------------------------------------
+SEARCH BAR:
+- Typing in search bar        → Filters products in real-time by name, description, or category
+- Clearing search             → Shows all products again
+
+FILTER BUTTONS:
+- "All" button                → Shows all products
+- "Bracelets" button          → Filters to show only Bracelets
+- "Boxes" button              → Filters to show only Mystery Boxes
+- "Hangs" button              → Filters to show only Phonecase Hangs
+- "Customize" button          → Hides product grid, shows Customization Request form
+
+PRODUCT CARDS:
+- Heart icon (wishlist)       → Adds/removes product from wishlist (requires login)
+- "Add to Cart" button        → Adds product to cart, updates cart badge count
+
+ADMIN ONLY (when logged in as admin):
+- "Add Product" button        → Opens modal to add a new product
+- Edit (pencil) icon          → Opens modal to edit existing product
+- Delete (trash) icon         → Deletes product after confirmation
+
+CUSTOMIZATION FORM (when "Customize" filter selected):
+- Product type radio buttons  → Select Bracelet / Box / Phone Hang
+- Description textarea        → Describe custom request
+- Name input                  → Customer name
+- Email/WhatsApp input        → Customer contact
+- "Send Customization Request"→ Requires login → sends request via EmailJS to admin email
+
+----------------------------------------------------
+4. ABOUT PAGE
+----------------------------------------------------
+- Stats section               → Decorative (500+ sold, 100% handmade, 20+ designs, 4.9 rating)
+- "@bluelove_bracelets" link  → Opens Instagram profile in new tab
+- "Subscribe to Newsletter"   → Requires login → saves user's email to Google Sheets Newsletter tab
+
+----------------------------------------------------
+5. FOOTER
+----------------------------------------------------
+- Home / Shop Collection / Our Story links → Navigate to respective pages
+- Admin Login link            → Opens Admin Login modal (hidden after admin logs in)
+- Logout link                 → Signs out admin (visible only when admin is logged in)
+- Instagram icon              → Opens Instagram profile in new tab
+- Newsletter email input + Go → (Footer newsletter - basic UI, separate from About page subscribe)
+
+----------------------------------------------------
+6. CART SIDEBAR
+----------------------------------------------------
+- Opens when Cart icon clicked
+- "+" / "-" buttons           → Increase / decrease item quantity
+- Trash icon per item         → Removes item from cart
+- "Proceed to Checkout"       → Requires login → Opens Checkout modal (disabled when cart empty)
+- Clicking overlay            → Closes cart sidebar
+
+----------------------------------------------------
+7. CHECKOUT MODAL
+----------------------------------------------------
+- Full Name input             → Customer name (auto-filled if profile saved)
+- Email Address input         → Customer email (auto-filled from login)
+- Delivery Address input      → Shipping address
+- City input                  → City
+- Phone Number input          → Contact number
+- "Confirm Order" button      → Logs order to Google Sheets (Orders tab) + sends email to admin via EmailJS + closes checkout + opens QR Payment modal
+
+----------------------------------------------------
+8. QR PAYMENT MODAL
+----------------------------------------------------
+- Shows UPI QR code image     → Customer scans to pay via any UPI app
+- Shows total amount to pay   → Dynamically set from cart total
+- "I've Paid ✓" button        → Clears cart, closes modal, shows confirmation, navigates to Home
+- "Cancel" button             → Closes QR modal without clearing cart
+
+----------------------------------------------------
+9. WELCOME / GUEST LOGIN MODAL (on page load)
+----------------------------------------------------
+- Appears automatically when user opens website (if not already logged in)
+- "Continue with Google"      → Signs in via Google OAuth popup
+- Sign In tab                 → Email + Password login form → "Sign In" button authenticates via Firebase
+- Sign Up tab                 → Name + Email + Password → "Create Account" creates new Firebase user
+- "Continue as Guest →"       → Dismisses modal, allows browsing without login
+
+----------------------------------------------------
+10. PROFILE SIDEBAR
+----------------------------------------------------
+- Opens when Profile icon clicked (only visible when logged in)
+- Shows user avatar initial, name, email
+- Name / Phone / Address / City inputs → Editable profile fields
+- "Save Changes" button       → Saves profile data to localStorage (auto-fills checkout next time)
+- Wishlist section            → Shows all wishlisted products
+  - "Add" button per item     → Adds wishlist item directly to cart
+  - "X" button per item       → Removes item from wishlist
+- "Sign Out" button           → Logs out user, hides profile icon
+
+----------------------------------------------------
+11. ADMIN LOGIN MODAL
+----------------------------------------------------
+- Accessible via "Admin Login" link in footer
+- Email + Password inputs     → Admin credentials stored in Firebase Auth
+- "Login" button              → Authenticates admin via Firebase
+- On success: enables content editing, shows Add/Edit/Delete product buttons
+
+----------------------------------------------------
+12. ADMIN FEATURES (when logged in as admin)
+----------------------------------------------------
+- All text with "edit-" prefix → Click to edit text inline (name, descriptions, quotes etc.)
+- Changes auto-saved to localStorage on blur
+- Add Product modal           → Name, Category, Price, Description, Image (upload or URL)
+- Edit Product modal          → Same fields, pre-filled with existing data
+- Delete Product              → Removes product with confirmation dialog
+
+----------------------------------------------------
+13. GOOGLE SHEETS INTEGRATION
+----------------------------------------------------
+- Every confirmed order       → Logged to "Orders" tab (Timestamp, Name, Email, Phone, Address, City, Items, Total)
+- Every newsletter subscribe  → Logged to "Newsletter" tab (Timestamp, Email)
+- Sheet URL: https://docs.google.com/spreadsheets/d/1HKwd6yZQquabaGIEsS9AmRfZ-uLs72v5Qbi9ybR82ww
+
+----------------------------------------------------
+14. EMAIL NOTIFICATIONS (EmailJS)
+----------------------------------------------------
+- On order confirmed          → Email sent to bluelove.bracelets.96@gmail.com with full order details
+- On customization request    → Email sent to bluelove.bracelets.96@gmail.com with request details
+
+----------------------------------------------------
+15. FIREBASE AUTHENTICATION
+----------------------------------------------------
+- Users can sign up with Email/Password or Google
+- Admin login restricted to bluelove.bracelets.96@gmail.com
+- All users visible in Firebase Console → Authentication → Users tab
+- Session persists across page refreshes
+
+----------------------------------------------------
+16. WISHLIST
+----------------------------------------------------
+- Heart icon on each product  → Toggle add/remove from wishlist
+- Wishlist stored in localStorage per browser
+- Viewable in Profile sidebar
+- Requires login to add items
+
+----------------------------------------------------
+17. ANIMATED BACKGROUND
+----------------------------------------------------
+- Falling hearts and sparkles → Decorative animation, no interaction
+
+====================================================
+  END OF REPORT
+====================================================
