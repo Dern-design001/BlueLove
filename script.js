@@ -248,9 +248,13 @@ function removeFromCart(id) {
 
 function showQRModal(total, orderData) {
     document.getElementById('qr-total').innerText = total;
+    // Set UPI deep link with amount
+    const upiId = 'michellesusan704@okhdfcbank';
+    const amount = total.replace('₹', '').replace(',', '');
+    document.getElementById('upi-pay-btn').href = `upi://pay?pa=${upiId}&pn=Bluelove%20Bracelets&am=${amount}&cu=INR`;
+    document.getElementById('utr-input').value = '';
     document.getElementById('qr-modal').classList.remove('hidden');
     document.getElementById('qr-modal').classList.add('flex');
-    // Store order data for confirmation
     window._pendingOrder = orderData;
 }
 
@@ -260,11 +264,20 @@ function hideQRModal() {
 }
 
 function confirmPaymentDone() {
+    const utr = document.getElementById('utr-input').value.trim();
+    if (!utr || utr.length < 6) {
+        alert('Please enter your UPI Reference / UTR number to confirm payment.');
+        return;
+    }
+    // Log UTR + order to Google Sheets
+    const orderData = window._pendingOrder || {};
+    logOrderToSheets({ ...orderData, utr, type: 'order' });
+
     hideQRModal();
     cart = [];
     updateCartUI();
     toggleCart();
-    alert("✨ Order placed! We'll confirm once payment is verified.");
+    alert('✨ Payment confirmed! We\'ll verify your UTR and process your order shortly.');
     navigateTo('home');
 }
 

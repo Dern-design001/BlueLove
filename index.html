@@ -450,17 +450,36 @@
 
     <!-- QR Payment Modal -->
     <div id="qr-modal" class="fixed inset-0 bg-blue-900/40 backdrop-blur-md z-[100] hidden items-center justify-center p-4">
-        <div class="bg-white rounded-[2.5rem] w-full max-w-sm p-10 animate-up shadow-2xl text-center">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-sm p-8 animate-up shadow-2xl text-center overflow-y-auto max-h-[95vh]">
             <h2 class="text-2xl font-extrabold text-blue-900 mb-1">Complete Payment</h2>
-            <p class="text-gray-400 text-sm mb-6">Scan the QR code to pay via any UPI app</p>
-            <div class="bg-blue-50 rounded-3xl p-4 mb-6 inline-block">
-                <img src="assets/qr-payment.jpeg" alt="UPI QR Code" class="w-56 h-56 object-contain mx-auto">
-            </div>
-            <div class="bg-blue-50 rounded-2xl px-6 py-3 mb-6 inline-block">
+            <p class="text-gray-400 text-sm mb-4">Scan the QR code or tap the button below to pay</p>
+
+            <!-- Amount -->
+            <div class="bg-blue-50 rounded-2xl px-6 py-3 mb-4 inline-block">
                 <p class="text-xs text-gray-400">Amount to Pay</p>
                 <p id="qr-total" class="text-3xl font-black text-blue-700">₹0</p>
             </div>
-            <button onclick="confirmPaymentDone()" class="w-full blue-gradient text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:opacity-90 transition-all mb-3">I've Paid ✓</button>
+
+            <!-- Mobile UPI deep link -->
+            <a id="upi-pay-btn" href="#" class="w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-3 rounded-2xl font-bold mb-4 hover:bg-gray-800 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>
+                Tap to Pay via GPay / UPI
+            </a>
+
+            <!-- QR Code -->
+            <div class="bg-blue-50 rounded-3xl p-3 mb-4 inline-block w-full">
+                <img src="assets/qr-payment.jpeg" alt="UPI QR Code" class="w-48 h-48 object-contain mx-auto">
+                <p class="text-xs text-gray-400 mt-2">Scan with any UPI app</p>
+            </div>
+
+            <!-- UTR Reference Input -->
+            <div class="text-left mb-4">
+                <label class="text-xs font-bold text-gray-400 uppercase ml-1 block mb-2">Enter 12-digit UPI Reference / UTR No.</label>
+                <input type="text" id="utr-input" maxlength="12" placeholder="e.g. 432112345678" class="w-full bg-gray-50 border-none rounded-xl px-5 py-3 outline-none focus:ring-2 focus:ring-blue-400 font-medium tracking-widest">
+                <p class="text-xs text-gray-400 mt-1 ml-1">Found in your GPay/UPI transaction receipt</p>
+            </div>
+
+            <button onclick="confirmPaymentDone()" class="w-full blue-gradient text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:opacity-90 transition-all mb-3">Confirm Payment ✓</button>
             <button onclick="hideQRModal()" class="w-full text-sm text-gray-400 hover:text-gray-600 transition-colors">Cancel</button>
         </div>
     </div>
