@@ -472,11 +472,22 @@
                 <p class="text-xs text-gray-400 mt-2">Scan with any UPI app</p>
             </div>
 
+            <!-- How to find UTR -->
+            <div class="bg-blue-50 rounded-2xl p-4 mb-4 text-left">
+                <p class="text-xs font-bold text-blue-700 uppercase mb-2">📍 How to find your UTR number</p>
+                <ol class="text-xs text-gray-500 space-y-1 list-decimal list-inside leading-relaxed">
+                    <li>Open <strong>GPay / PhonePe / Paytm</strong> on your phone</li>
+                    <li>Go to <strong>Transaction History</strong></li>
+                    <li>Tap the payment you just made</li>
+                    <li>Look for <strong>"UPI Ref No."</strong>, <strong>"UTR"</strong> or <strong>"Transaction ID"</strong></li>
+                    <li>It's a <strong>12-digit number</strong> — copy and paste it below</li>
+                </ol>
+            </div>
+
             <!-- UTR Reference Input -->
             <div class="text-left mb-4">
-                <label class="text-xs font-bold text-gray-400 uppercase ml-1 block mb-2">Enter 12-digit UPI Reference / UTR No.</label>
-                <input type="text" id="utr-input" maxlength="12" placeholder="e.g. 432112345678" class="w-full bg-gray-50 border-none rounded-xl px-5 py-3 outline-none focus:ring-2 focus:ring-blue-400 font-medium tracking-widest">
-                <p class="text-xs text-gray-400 mt-1 ml-1">Found in your GPay/UPI transaction receipt</p>
+                <label class="text-xs font-bold text-gray-400 uppercase ml-1 block mb-2">Enter UPI Reference / UTR Number</label>
+                <input type="text" id="utr-input" maxlength="12" placeholder="12-digit UTR (e.g. 432112345678)" class="w-full bg-gray-50 border-none rounded-xl px-5 py-3 outline-none focus:ring-2 focus:ring-blue-400 font-medium tracking-widest">
             </div>
 
             <button onclick="confirmPaymentDone()" class="w-full blue-gradient text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:opacity-90 transition-all mb-3">Confirm Payment ✓</button>
